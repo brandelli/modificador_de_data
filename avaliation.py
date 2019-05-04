@@ -1,7 +1,9 @@
 def change_date(date, op, value):
     if not is_valid_op(op):
         raise ValueError('Use only the following operators: - and +')
-
+    
+    # usado dicionario para armazenar as informacoes da data recebida
+    # devido a organizacao e facilidade de acessar os dados
     data = get_data_from_date(date)
     value = abs(value)
     if op == '+':
@@ -9,9 +11,9 @@ def change_date(date, op, value):
     else:
         decrement_date(data, value)
     
-    return format_data(data)
+    return format_data_to_string(data)
     
-def format_data(data):
+def format_data_to_string(data):
     hours = data['minutes'] // 60
     minutes = data['minutes'] - hours * 60
     return '{:02d}/{:02d}/{:04d} {:02d}:{:02d}'.format(data['day'], data['month'], data['year'], hours, minutes)
@@ -31,6 +33,7 @@ def increment_date(data, value):
 def add_day(data):
     data['minutes'] = 0
     new_day = data['day'] + 1
+    # faz a verificacao de mudanca de mes
     if new_day > get_days_in_month(data['month']):
         new_day = 1
         add_month(data)
@@ -39,6 +42,7 @@ def add_day(data):
 
 def add_month(data):
     new_month = data['month'] + 1
+    # faz a verificacao de mudanca de ano
     if new_month > 12:
         new_month = 1
         add_year(data)
@@ -50,16 +54,38 @@ def add_year(data):
 
 
 def decrement_date(data, value):
-    print('Decrement date')
+    while value > 0:
+        minutes = data['minutes']
+        # caso o decremento dos minutos seja maior que 1 dia
+        if(minutes - value < 0):
+            decrement_day(data)
+            value = value - minutes
+        # caso o decremento dos minutos acabe no mesmo dia
+        else:
+            data['minutes'] = minutes - value
+            value = 0
 
 def decrement_day(data):
-    print('decrement day')
+    data['minutes'] = 1440
+    new_day = data['day'] - 1
+    # verifica a mudanca de mes
+    if new_day < 1:
+        decrement_month(data)
+        new_day = get_days_in_month(data['month'])
+    
+    data['day'] = new_day
 
 def decrement_month(data):
-    print('decrement month')
+    new_month = data['month'] - 1
+    # verifica a mudanca de ano
+    if new_month < 1:
+        new_month = 12
+        decrement_year(data)
+    
+    data['month'] = new_month
 
 def decrement_year(data):
-    print('decrement year')
+    data['year'] = data['year'] - 1 
 
 
 def is_valid_op(op):
@@ -97,3 +123,4 @@ def get_days_in_month(month):
         12: 31
     }
     return days_in_month[month]
+
