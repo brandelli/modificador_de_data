@@ -1,8 +1,13 @@
 def change_date(date, op, value):
     #Function para modificar uma data, adicionando ou removendo minutos
+    
+    # raise ValueError quando tem operacao invalida
     if not is_valid_op(op):
         raise ValueError('Use only the following operators: - and +')
-    
+
+    # raise ValueError quanto tem valores invalidos na data
+    # por não ter sido solicitada essa verificacao,
+    # ela assume que os valores sao numericos nos campos da data 
     if not is_valid_input(date):
         raise ValueError('Error in date values')
 
@@ -69,7 +74,7 @@ def add_year(data):
 
 
 def decrement_date(data, value):
-    #Function para decrementar 1 valor de uma dataS
+    #Function para decrementar 1 valor de uma data
     while value > 0:
         minutes = data['minutes']
         # caso o decremento dos minutos seja maior que 1 dia
@@ -108,7 +113,10 @@ def decrement_month(data):
 
 def decrement_year(data):
     #Function para decrementar 1 ano da data
-    data['year'] = data['year'] - 1 
+    data['year'] = data['year'] - 1
+    # caso a data esteja sendo decrementada para anos invalidos
+    if data['year'] < 1:
+        raise ValueError('Invalid date decrement') 
 
 
 def is_valid_op(op):
