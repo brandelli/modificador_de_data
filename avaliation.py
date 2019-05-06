@@ -3,6 +3,9 @@ def change_date(date, op, value):
     if not is_valid_op(op):
         raise ValueError('Use only the following operators: - and +')
     
+    if not is_valid_input(date):
+        raise ValueError('Error in date values')
+
     # usado dicionario para armazenar as informacoes da data recebida
     # devido a organizacao e facilidade de acessar os dados
     data = get_data_from_date(date)
@@ -152,3 +155,60 @@ def get_days_in_month(month):
     }
     return days_in_month[month]
 
+def is_valid_input(date):
+    #Function para verificar a validade dos dados de entrada
+    just_date, just_time = date.split(' ')
+    day, month, year = just_date.split('/')
+    hours, minutes = just_time.split(':')
+    
+    if not is_valid_year(year):
+        print('Invalid year')
+        return False
+    
+    if not is_valid_month(month):
+        print('Invalid month')
+        return False
+    
+    if not is_valid_day(day, month):
+        print('Invalid day')
+        return False
+
+    if not is_valid_hour(hours):
+        print('Invalid hour')
+        return False
+    
+    if not is_valid_minute(minutes):
+        print('Invalid minute')
+        return False
+
+    return True
+
+
+def is_valid_year(year):
+    #Function para verificar o ano
+    return int(year) > 0
+
+
+def is_valid_day(day, month):
+    #Function para verificar o dia
+    day = int(day)
+    month = int(month)
+    return day > 0 and day <= get_days_in_month(month)
+
+
+def is_valid_month(month):
+    #Function para verificar o mes
+    month = int(month)
+    return month > 0 and month < 13
+
+
+def is_valid_hour(hour):
+    #Function para verificar a hora
+    hour = int(hour)
+    return hour >= 0 and hour < 24
+
+
+def is_valid_minute(minute):
+    #Function para o minuto
+    minute = int(minute)
+    return minute >=0 and minute < 60
